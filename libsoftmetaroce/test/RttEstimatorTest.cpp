@@ -35,6 +35,8 @@ DECLARE_bool(libsoftmetaroce_rfc6298_first_rtt_sample);
 DECLARE_uint32(libsoftmetaroce_initial_est_rtt_us);
 // NOLINTNEXTLINE(facebook-hte-PreventUseOfDeclareGflag)
 DECLARE_uint32(libsoftmetaroce_initial_mdev_rtt_us);
+// NOLINTNEXTLINE(facebook-hte-PreventUseOfDeclareGflag)
+DECLARE_uint32(libsoftmetaroce_max_rto_us);
 
 using namespace testing;
 namespace libsoftmetaroce {
@@ -243,7 +245,9 @@ TEST_F(RttEstimatorTest, ExplicitMaxRtoFlagBeatsTheSlowReceiverCap) {
   auto* flow = makeFlow();
   ASSERT_NE(flow, nullptr);
   const auto& txState = flow->getTxState();
-  ASSERT_GT((txState.estRttNs + 4 * txState.mdevRttNs) / kNsPerUs, kMaxRtoUs)
+  ASSERT_GT(
+      (txState.estRttNs + 4 * txState.mdevRttNs) / kNsPerUs,
+      kMaxRtoUs)
       << "precondition: the initial estimate must exceed the explicit cap so "
          "the test exercises RTO limiting without backoff";
 
